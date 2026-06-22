@@ -13,16 +13,8 @@ def hash_file(file_path: Path) -> str:
                 h.update(chunk)
         return h.hexdigest()
     except (FileNotFoundError, PermissionError) as exc:
-        print(f"Skipping {file_path}: {exc}")
+        print(f"Skipping {file_path}: {exc}") # Wrote skipping since we know there is a file to go to in our case
         return None
-    
-
-    # except FileNotFoundError:
-    #     print(f"File not found: {file_path}")
-    #     return None
-    # except PermissionError:
-    #     print(f"Permission denied: {file_path}")
-    #     return None
         
 
 if __name__ == "__main__":
