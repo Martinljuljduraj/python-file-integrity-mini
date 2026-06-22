@@ -477,7 +477,7 @@ Possible pages:
 
 ## Security Considerations
 
-The intern should follow these rules:
+You should follow these rules:
 
 - Do not store secrets in the repository
 - Do not scan directories without permission
@@ -515,7 +515,7 @@ The project is complete when:
 
 ---
 
-## Suggested Intern Timeline
+## Suggested Timeline
 
 ### Week 1
 
@@ -549,7 +549,7 @@ The project is complete when:
 
 ## Final Demo Expectations
 
-The intern should be able to demonstrate:
+You should be able to demonstrate:
 
 1. Creating a baseline
 2. Modifying a file
@@ -564,7 +564,7 @@ The intern should be able to demonstrate:
 
 ## Learning Outcomes
 
-By completing this project, the intern should understand:
+By completing this project, you should understand:
 
 - How file hashing works
 - Why baselines are useful in cybersecurity
