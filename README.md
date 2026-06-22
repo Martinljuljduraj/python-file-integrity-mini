@@ -77,7 +77,7 @@ file-integrity-monitor/
 ### 1. Clone the Repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/DwayneM20/python-file-integrity-mini
 cd file-integrity-monitor
 ```
 
