@@ -121,6 +121,28 @@ scan_parser.add_argument("--baseline", required=True)
 
 
 
+# Milestone 5
+def report(changes: dict, scanned_path: Path) -> None:
+    print("File Integrity Scan Complete")
+    print(f"\nScanned Path: {scanned_path}")
+    print("\nSummary:")
+    print(f"- New files: {len(changes['new'])}")
+    print(f"- Modified files: {len(changes['modified'])}")
+    print(f"- Deleted files: {len(changes['deleted'])}")
+    
+    print("\nNew Files:")
+    for file in changes["new"]:
+        print(f"  - {file}")
+
+    print("\nModified Files:")
+    for file in changes["modified"]:
+        print(f"  - {file}")
+
+    print("\nDeleted Files:")
+    for file in changes["deleted"]:
+        print(f"  - {file}")
+
+
 
 
 if __name__ == "__main__":
@@ -134,22 +156,22 @@ if __name__ == "__main__":
     # results = scan_directory(Path("sample_files"))
     # save_baseline(results, Path("baselines/baseline.json"), Path("sample_files"))
 
-    # Parsing gave me a much cleaner way to test if we see if baseline (.json) is saved to the baselines folder
-    args = parser.parse_args()
+    # # Parsing gave me a much cleaner way to test if we see if baseline (.json) is saved to the baselines folder
+    args = parser.parse_args() # Need this line for Milestone 3, 4, 5 
 
-    if args.command == "baseline":
-        results = scan_directory(Path(args.path))
-        save_baseline(results, Path(args.output), Path(args.path))
-        print(f"Baseline saved to {args.output}")
+    # if args.command == "baseline":
+    #     results = scan_directory(Path(args.path))
+    #     save_baseline(results, Path(args.output), Path(args.path))
+    #     print(f"Baseline saved to {args.output}")
 
-    # testing for Milestone 4
-    # Need to save your baseline using the command, then make changes in sample_files/, 
-    # then use the scan command. Both are given from README.
+    # # testing for Milestone 4
+    # # Need to save your baseline using the command, then make changes in sample_files/, 
+    # # then use the scan command. Both are given from README.
     if args.command == "scan":
         current = scan_directory(Path(args.path))
         baseline = load_baseline(Path(args.baseline))
         changes = compare(baseline, current)
-        print(changes)
+        report(changes, Path(args.path))    # Neatly prints our report for Milestone 5
 
 
 
