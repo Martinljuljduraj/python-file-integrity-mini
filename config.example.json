@@ -1,0 +1,7 @@
+{
+    "scan_path": "./sample_files",
+    "baseline_path": "./baselines/baseline.json",
+    "report_path": "./reports/scan_report.json",
+    "ignore_dirs": [".git", "venv", "__pycache__", "node_modules"],
+    "ignore_extensions": [".tmp", ".log"]
+}

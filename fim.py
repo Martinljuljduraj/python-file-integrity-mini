@@ -23,9 +23,12 @@ def hash_file(file_path: Path) -> str:
 
 
 # Milestone 2
-def scan_directory(directory: Path) -> dict:
-    # ignore all these folders
-    ignored_folders = {".git", "venv", "__pycache__", "node_modules"}
+def scan_directory(directory: Path, ignored_folders: set = None, ignore_extensions: set = None) -> dict:
+    if ignored_folders is None:
+        # ignore all these folders
+        ignored_folders = {".git", "venv", "__pycache__", "node_modules"}
+    if ignore_extensions is None:
+        ignore_extensions = set()  # empty by default with no extensions ignored
 
     root = Path(directory).resolve()  # Convert to absolute path first
     files_data = {} # our dict
@@ -35,6 +38,8 @@ def scan_directory(directory: Path) -> dict:
         if not p.is_file(): # checking if it is a file
             continue
         if any(part in ignored_folders for part in p.parts): # skip anything inside ignored_folders
+            continue
+        if p.suffix in ignore_extensions:  # skip ignored extensions
             continue
         
         # Turn each absolute path into a path relative to the scan root.
@@ -79,6 +84,9 @@ baseline_parser = subparsers.add_parser("baseline")
 baseline_parser.add_argument("--path", required=True)
 baseline_parser.add_argument("--output", required=True)
 
+# Need a baseline --config arguments to our subparser here
+baseline_parser.add_argument("--config", required=False)
+
 
 
 
@@ -116,8 +124,11 @@ def compare(baseline: dict, current: dict) -> dict:
 # Milestone 4 continued
 # Using the parser outside the functions similar to Milestone 3
 scan_parser = subparsers.add_parser("scan")
-scan_parser.add_argument("--path", required=True)
-scan_parser.add_argument("--baseline", required=True)
+scan_parser.add_argument("--path", required=False)
+scan_parser.add_argument("--baseline", required=False)
+
+# Need a scan --config argument for our subparser here
+scan_parser.add_argument("--config", required=False)
 
 
 
@@ -144,6 +155,15 @@ def report(changes: dict, scanned_path: Path) -> None:
 
 
 
+# Milestone 6
+# Created the config.example.json file as instructed
+
+def load_config(config_path: Path) -> dict: # similar to the load_baseline function from Milestone 4
+    with open(config_path, "r") as f:
+        return json.load(f)
+
+
+
 
 if __name__ == "__main__":
     # testing for Milestone 1
@@ -157,22 +177,36 @@ if __name__ == "__main__":
     # save_baseline(results, Path("baselines/baseline.json"), Path("sample_files"))
 
     # # Parsing gave me a much cleaner way to test if we see if baseline (.json) is saved to the baselines folder
-    args = parser.parse_args() # Need this line for Milestone 3, 4, 5 
+    args = parser.parse_args() # Need this line for Milestone 3, 4, 5, 6
 
-    # if args.command == "baseline":
-    #     results = scan_directory(Path(args.path))
-    #     save_baseline(results, Path(args.output), Path(args.path))
-    #     print(f"Baseline saved to {args.output}")
+    # Need our baseline block
+    if args.command == "baseline":
+        results = scan_directory(Path(args.path))
+        save_baseline(results, Path(args.output), Path(args.path))
+        print(f"Baseline saved to {args.output}")
 
     # # testing for Milestone 4
     # # Need to save your baseline using the command, then make changes in sample_files/, 
     # # then use the scan command. Both are given from README.
-    if args.command == "scan":
-        current = scan_directory(Path(args.path))
-        baseline = load_baseline(Path(args.baseline))
-        changes = compare(baseline, current)
-        report(changes, Path(args.path))    # Neatly prints our report for Milestone 5
 
+    # Updated our scan
+    if args.command == "scan":
+        if args.config:
+            config = load_config(Path(args.config))
+            scan_path = Path(config["scan_path"])
+            baseline_path = Path(config["baseline_path"])
+            ignore_dirs = set(config["ignore_dirs"])
+            ignore_extensions = set(config["ignore_extensions"])
+        else:
+            scan_path = Path(args.path)
+            baseline_path = Path(args.baseline)
+            ignore_dirs = None
+            ignore_extensions = None
+
+        current = scan_directory(scan_path, ignore_dirs, ignore_extensions)
+        baseline = load_baseline(baseline_path)
+        changes = compare(baseline, current)
+        report(changes, scan_path) # Neatly prints our report for Milestone 5 and onward
 
 
 
